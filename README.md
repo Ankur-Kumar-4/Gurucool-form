@@ -28,6 +28,7 @@ Check out the live demo of the project deployed here:
 
 - React
 - Tailwind CSS
+- framer-motion (for animation)
 - Local Storage for data persistence
 
 ## Setup Instructions
@@ -55,23 +56,23 @@ This will install all required Node.js packages, including React and Tailwind CS
 
 Tailwind CSS has already been pre-configured in this project. Ensure that the following files are correctly set up:
 
-tailwind.config.js: Configuration for Tailwind's theme and styles.
-postcss.config.js: PostCSS file for processing Tailwind directives.
-index.css: Global CSS file that imports Tailwind's styles using the following directives:
+- tailwind.config.js: Configuration for Tailwind's theme and styles.
+- postcss.config.js: PostCSS file for processing Tailwind directives.
+- index.css: Global CSS file that imports Tailwind's styles using the following directives:
 
-css
-Copy code
+```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+```
 
 ### 4. Local Storage Setup
 
 Data entered into the form is stored in localStorage. If you need to clear this data during testing or debugging, you can manually clear localStorage in your browser’s developer console:
 
-javascript
-Copy code
+```javascript
 localStorage.clear();
+```
 This step is optional but useful for ensuring clean data during testing.
 
 ### 5. Development Server
