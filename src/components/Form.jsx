@@ -1,13 +1,15 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "react-toastify";
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { toast } from "react-toastify"
+import { Loader2 } from "lucide-react"
 
 export default function Component() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState(() => {
-    const savedData = localStorage.getItem("formData");
+    const savedData = localStorage.getItem("formData")
     return savedData
       ? JSON.parse(savedData)
       : {
@@ -19,74 +21,74 @@ export default function Component() {
           city: "",
           state: "",
           zipCode: "",
-        };
-  });
-  const [errors, setErrors] = useState({});
+        }
+  })
+  const [errors, setErrors] = useState({})
 
   useEffect(() => {
-    const savedData = localStorage.getItem("formData");
+    const savedData = localStorage.getItem("formData")
     if (savedData) {
-      setFormData(JSON.parse(savedData));
+      setFormData(JSON.parse(savedData))
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    localStorage.setItem("formData", JSON.stringify(formData));
-  }, [formData]);
+    localStorage.setItem("formData", JSON.stringify(formData))
+  }, [formData])
 
   const validateStep = (stepNumber) => {
-    const newErrors = {};
+    const newErrors = {}
     switch (stepNumber) {
       case 1:
-        if (!formData.name) newErrors.name = "Name is required";
-        if (!formData.email) newErrors.email = "Email is required";
+        if (!formData.name) newErrors.name = "Name is required"
+        if (!formData.email) newErrors.email = "Email is required"
         else if (!/\S+@\S+\.\S+/.test(formData.email))
-          newErrors.email = "Email is invalid";
-        if (!formData.phone) newErrors.phone = "Phone is required";
+          newErrors.email = "Email is invalid"
+        if (!formData.phone) newErrors.phone = "Phone is required"
         if (formData.phone.length < 10 || isNaN(Number(formData.phone)))
-          newErrors.phone = "Phone number is invalid";
-        break;
+          newErrors.phone = "Phone number is invalid"
+        break
       case 2:
         if (!formData.addressLine1)
-          newErrors.addressLine1 = "Address Line 1 is required";
-        if (!formData.city) newErrors.city = "City is required";
-        if (!formData.state) newErrors.state = "State is required";
-        if (!formData.zipCode) newErrors.zipCode = "Zip Code is required";
+          newErrors.addressLine1 = "Address Line 1 is required"
+        if (!formData.city) newErrors.city = "City is required"
+        if (!formData.state) newErrors.state = "State is required"
+        if (!formData.zipCode) newErrors.zipCode = "Zip Code is required"
         if (isNaN(Number(formData.zipCode)) || formData.zipCode.length !== 6)
-          newErrors.zipCode = "Zip Code is invalid";
-        break;
+          newErrors.zipCode = "Zip Code is invalid"
+        break
       default:
-        break;
+        break
     }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   const handleNext = () => {
     if (validateStep(step)) {
-      setStep((prevStep) => prevStep + 1);
+      setStep((prevStep) => prevStep + 1)
     }
-  };
+  }
 
   const handleBack = () => {
-    setStep((prevStep) => prevStep - 1);
-  };
+    setStep((prevStep) => prevStep - 1)
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-
-    setTimeout(() => {
-      if (validateStep(3)) {
+    e.preventDefault()
+    if (validateStep(3)) {
+      setIsSubmitting(true)
+      setTimeout(() => {
         try {
-          toast.success("Form submitted successfully!");
+          toast.success("Form submitted successfully!")
           setFormData({
             name: "",
             email: "",
@@ -96,18 +98,20 @@ export default function Component() {
             city: "",
             state: "",
             zipCode: "",
-          });
-          setStep(1);
-          localStorage.removeItem("formData");
+          })
+          setStep(1)
+          localStorage.removeItem("formData")
         } catch (error) {
-          toast.error("Something went wrong. Please try again.");
-          console.error("Submission Error:", error);
+          toast.error("Something went wrong. Please try again.")
+          console.error("Submission Error:", error)
+        } finally {
+          setIsSubmitting(false)
         }
-      } else {
-        toast.error("Please fill in all required fields correctly.");
-      }
-    }, 1000);
-  };
+      }, 2000)
+    } else {
+      toast.error("Please fill in all required fields correctly.")
+    }
+  }
 
   const renderStep = () => {
     switch (step) {
@@ -120,10 +124,7 @@ export default function Component() {
             className="space-y-4"
           >
             <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Name
               </label>
               <input
@@ -142,10 +143,7 @@ export default function Component() {
               )}
             </div>
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email
               </label>
               <input
@@ -164,10 +162,7 @@ export default function Component() {
               )}
             </div>
             <div>
-              <label
-                htmlFor="phone"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
                 Phone
               </label>
               <input
@@ -186,7 +181,7 @@ export default function Component() {
               )}
             </div>
           </motion.div>
-        );
+        )
       case 2:
         return (
           <motion.div
@@ -196,10 +191,7 @@ export default function Component() {
             className="space-y-4"
           >
             <div>
-              <label
-                htmlFor="addressLine1"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-700">
                 Address Line 1
               </label>
               <input
@@ -220,10 +212,7 @@ export default function Component() {
               )}
             </div>
             <div>
-              <label
-                htmlFor="addressLine2"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-700">
                 Address Line 2
               </label>
               <input
@@ -237,10 +226,7 @@ export default function Component() {
               />
             </div>
             <div>
-              <label
-                htmlFor="city"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="city" className="block text-sm font-medium text-gray-700">
                 City
               </label>
               <input
@@ -259,10 +245,7 @@ export default function Component() {
               )}
             </div>
             <div>
-              <label
-                htmlFor="state"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="state" className="block text-sm font-medium text-gray-700">
                 State
               </label>
               <input
@@ -281,10 +264,7 @@ export default function Component() {
               )}
             </div>
             <div>
-              <label
-                htmlFor="zipCode"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
                 Zip Code
               </label>
               <input
@@ -303,7 +283,7 @@ export default function Component() {
               )}
             </div>
           </motion.div>
-        );
+        )
       case 3:
         return (
           <motion.div
@@ -354,11 +334,11 @@ export default function Component() {
               </div>
             </div>
           </motion.div>
-        );
+        )
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-400 via-purple-500 to-indigo-500 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -396,7 +376,7 @@ export default function Component() {
                 {[1, 2, 3].map((num) => (
                   <li
                     key={num}
-                    className={`relative ${num === 3 ? "" : "pr-4 sm:pr-8"}`}
+                    className={`relative ${num === 3 ? "" : "pr-8 sm:pr-20"}`}
                   >
                     <div
                       className="absolute inset-0 flex items-center"
@@ -475,9 +455,17 @@ export default function Component() {
                     whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.5 }}
                     onClick={handleSubmit}
-                    className="w-full sm:w-auto inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-300 ease-in-out"
+                    disabled={isSubmitting}
+                    className="w-full sm:w-auto inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-300 ease-in-out"
                   >
-                    Submit
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
+                        Submitting...
+                      </>
+                    ) : (
+                      'Submit'
+                    )}
                   </motion.button>
                 )}
               </motion.div>
@@ -486,5 +474,5 @@ export default function Component() {
         </motion.div>
       </div>
     </div>
-  );
+  )
 }
